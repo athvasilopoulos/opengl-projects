@@ -24,7 +24,7 @@ The additional controls for this lab are:
 - R/G/B keys to increase the corresponding base light color 
 
 ### 4. Skinning and Animation
-
+In this lab the object was to manually do the skinning of a human model and experiment with animation. The result is the human doing the moonwalk dance.
 
 ## Build instructions
 

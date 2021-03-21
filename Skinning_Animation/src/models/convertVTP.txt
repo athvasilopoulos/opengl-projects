@@ -1,0 +1,4 @@
+1. Load the vtp file into Paraview
+2. Export Scene to .x3d file.
+3. In MeshLab open .x3d file
+4. save into .obj file
