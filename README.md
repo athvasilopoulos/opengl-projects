@@ -16,8 +16,15 @@ The additional controls for this lab are:
 - T key to switch between wireframe and normal view
 
 ### 3. Standard Shading
+In this lab the object was to experiment with materials and light properties, using the phong reflection model. Suzannes made up from different materials are rendered, along with a light source, and the user can tweek the light properties and position. <br>
+The additional controls for this lab are:
+- I/K/J/L keys to move the light around
+- U/O keys to move the light up and down
+- M/N keys to tweek the light intensity
+- R/G/B keys to increase the corresponding base light color 
 
 ### 4. Skinning and Animation
+
 
 ## Build instructions
 

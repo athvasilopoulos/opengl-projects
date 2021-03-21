@@ -1,0 +1,92 @@
+#version 330 core
+
+// Interpolated values from the vertex shaders (vertex_position_modelspace, 
+// vertex_normal_modelspace and vertex_UV coordinates)
+in vec3 vertex_position_cameraspace;
+in vec3 vertex_normal_cameraspace;
+in vec2 vertex_UV;
+
+// Material struct
+struct Material{
+    vec3 Ks;
+    vec3 Kd;
+    vec3 Ka;
+    float Ns;
+};
+uniform Material mat;
+
+// Light properties
+uniform vec3 light_color;
+uniform float light_power;
+
+// uniform variables
+uniform vec3 light_position_cameraspace;
+uniform mat4 V;
+uniform sampler2D diffuseColorSampler;
+uniform sampler2D specularColorSampler;
+
+// output data
+out vec4 fragment_color;
+
+void main()
+{
+    // Default color
+    fragment_color = vec4(1, 1, 1, 1);
+
+    // Model light: specular (Ls), diffuse (Ld) and ambient (La) color (same color in this version)
+    vec3 Ls = light_color;
+    vec3 Ld = light_color;
+    vec3 La = light_color;
+
+    // Material properties from uniform variable
+    vec3 Ks = mat.Ks;
+    vec3 Kd = mat.Kd;
+    vec3 Ka = mat.Ka;
+    float Ns = mat.Ns;
+
+    /* Assign material properties from the texture maps if needed
+    Ks = vec3(texture(specularColorSampler, vertex_UV).rgb);
+    Kd = vec3(texture(diffuseColorSampler, vertex_UV).rgb);
+    Ka = vec3(0.1, 0.1, 0.1);
+    Ns = 10;
+    //*/
+
+    // Ambient intensity
+    vec3 Ia = La * Ka;
+    fragment_color = vec4(Ia, 1.0);
+
+    // Diffuse intensity
+    vec3 N = normalize(vertex_normal_cameraspace);
+    vec3 L = normalize(light_position_cameraspace - vertex_position_cameraspace);
+    float cosTheta = clamp(dot(L, N), 0, 1);
+    vec3 Id = Kd * Ld * cosTheta;
+    fragment_color = vec4(Ia + Id, 1.0);
+
+    // Specular intensity
+    vec3 R = reflect(-L, N);
+    vec3 E = normalize(-vertex_position_cameraspace);
+    float cosAlpha = clamp(dot(E, R), 0, 1);
+    float sp_factor = pow(cosAlpha, Ns);
+    vec3 Is = Ks * Ls * sp_factor;
+    fragment_color = vec4(Ia + Id + Is, 1.0);
+
+    // Light distance effect
+    float dist = length(light_position_cameraspace - vertex_position_cameraspace);
+    float dist_sq = dist * dist;
+    
+    // Final color
+    fragment_color = vec4(Ia + light_power * Id / dist_sq + light_power * Is / dist_sq, 1.0);
+
+    /* Spotlight effect implementation
+    vec3 spotlight_dir_worldspace = vec3(0.0, 0.0, -1.0);
+    vec3 spotlight_dir_cameraspace = vec3(V * vec4(spotlight_dir_worldspace, 0.0));
+    float spotlight_angle = dot(spotlight_dir_cameraspace, -L);
+    float cutoff_angle = cos(0.18);
+
+    float spotlight_factor = 10.0;
+    if (spotlight_angle < cutoff_angle) spotlight_factor = 0.0;
+
+    spotlight_factor = clamp((spotlight_angle - cutoff_angle) / (1.0 - cutoff_angle), 0, 1);
+    fragment_color = vec4(Ia + spotlight_factor * Id + spotlight_factor * Is, 1.0);
+    //*/
+}
