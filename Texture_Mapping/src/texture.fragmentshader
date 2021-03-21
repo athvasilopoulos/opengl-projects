@@ -1,0 +1,30 @@
+#version 330 core
+
+// Interpolated values from the vertex shaders
+in vec2 UV;
+
+// output data
+out vec4 color;
+
+// Values that stay constant for the whole mesh.
+uniform float time;
+uniform sampler2D textureSampler;
+uniform sampler2D movingTextureSampler;
+uniform sampler2D movingTextureSampler2;
+
+
+void main()
+{
+    // Application of the moving textures, using slightly different movement speeds to
+    // extend the period and make it indistinguishable to the user
+    vec3 water_color = texture(movingTextureSampler, UV + 0.5f * time).rgb;
+    vec3 displ_color = texture(movingTextureSampler2, UV + 0.49f * time).rgb;
+    water_color = mix(water_color, displ_color, 0.5);
+
+    // Interaction between the moving textures and the 
+    // standard texture to create a wavy effect
+    vec3 texture_color = texture(textureSampler, UV + 0.05f * length(water_color)).rgb;
+    
+    // Mix the two textures together
+    color = vec4(mix(texture_color, water_color, 0.4), 0.3f);
+}
