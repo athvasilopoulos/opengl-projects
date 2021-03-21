@@ -8,6 +8,12 @@ This repository contains some of the lab exercises completed in the Graphics and
 In this lab the object was to apply different textures on Suzanne and make them interact with each other to create an underwater wavy effect.
 
 ### 2. Mesh Manipulation
+In this lab the object was to load a heart model and manipulate it using a plane. Above the plane, which can be moved by the user, the heart is opaque while below it the heart is transparent. The user can also detach the two parts of the heart, defined by the plane and also can switch between wireframe and normal view.<br>
+The additional controls for this lab are:
+- I/K keys for plane up/down movement
+- J/L keys for plane rotation
+- U/O keys for heart detachment
+- T key to switch between wireframe and normal view
 
 ### 3. Standard Shading
 
@@ -25,6 +31,6 @@ The projects can be built using CMake. The procedure is the following:
 ## General Camera Controls
 
 On all four labs you can use the following camera controls<br>
-1. WASD to move the camera around
-2. Q/E to move the camera up and down
-3. Up/Down arrow for zoom effects
+- WASD to move the camera around
+- Q/E to move the camera up and down
+- Up/Down arrow for zoom effects

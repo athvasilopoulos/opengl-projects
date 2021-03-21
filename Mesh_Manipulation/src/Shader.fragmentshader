@@ -1,0 +1,43 @@
+#version 330 core
+
+// output data
+out vec4 color;
+
+in vec4 vertexPosition_worldspace;
+
+uniform vec4 planeCoeffs;
+uniform vec3 detachmentDisplacement;
+ 
+void main()
+{
+    
+    // Assign a color based on the position of the fragment. Make the lower part transparent
+    // and discard any fragment being stretched between the detachment zone.
+    if (dot(vertexPosition_worldspace, planeCoeffs) > length(detachmentDisplacement)){
+        color = vec4(vertexPosition_worldspace.xyz, 1.0f);
+    }
+    else if (dot(vertexPosition_worldspace, planeCoeffs) < -length(detachmentDisplacement)){
+        color = vec4(vertexPosition_worldspace.xyz, 0.3f);
+    }
+    else{
+        discard;
+    }
+
+    /* Assign color based on distance from plane and not based on the position
+    vec3 basecolor = vec3(0.5, 0.5, 0.5);
+    float den = sqrt(planeCoeffs.x*planeCoeffs.x + planeCoeffs.y*planeCoeffs.y + planeCoeffs.z*planeCoeffs.z);
+    if (dot(vertexPosition_worldspace, planeCoeffs) > length(detachmentDisplacement)){
+        float num = dot(vertexPosition_worldspace, planeCoeffs) - length(detachmentDisplacement);
+        float dist = num / den;
+        color = vec4(1.5 * dist * basecolor.x, 2.0 * dist * basecolor.y, 2.5 * dist * basecolor.z, 1.0f);
+    }
+    else if (dot(vertexPosition_worldspace, planeCoeffs) < -length(detachmentDisplacement)){
+        float num = - (dot(vertexPosition_worldspace, planeCoeffs) + length(detachmentDisplacement));
+        float dist = num / den;
+        color = vec4(1.5 * dist * basecolor.x, 2.0 * dist * basecolor.y, 2.5 * dist * basecolor.z, 0.3f);
+    }
+    else{
+        discard;
+    }
+    //*/
+}

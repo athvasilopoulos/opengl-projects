@@ -1,0 +1,31 @@
+#version 330 core
+
+
+layout(location = 0) in vec3 vertexPosition_modelspace;
+
+uniform mat4 MVP;
+uniform mat4 M;
+
+out vec4 vertexPosition_worldspace;
+
+uniform vec3 detachmentDisplacement;
+uniform vec4 planeCoeffs;
+
+void main()
+{
+    vec4 coordinates_modelspace = vec4(vertexPosition_modelspace, 1.0);
+
+    // Displace the coordinates above the plane by the detachmentDisplacement 
+    // and the coordinates below the plane by -detachmentDisplacement
+    vertexPosition_worldspace = M * coordinates_modelspace;
+    if (dot(vertexPosition_worldspace, planeCoeffs) > 0.02){
+        coordinates_modelspace = coordinates_modelspace + vec4(detachmentDisplacement, 0.0f);
+    }
+    else if (dot(vertexPosition_worldspace, planeCoeffs) < -0.02){
+        coordinates_modelspace = coordinates_modelspace - vec4(detachmentDisplacement, 0.0f);
+    }
+
+    vertexPosition_worldspace = M * coordinates_modelspace;
+    gl_Position = MVP * coordinates_modelspace;
+
+}
